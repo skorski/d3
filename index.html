@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+<h1> this is not a title </h1>
+
+
+<style>
+
+.chart div {
+  font: 10px sans-serif;
+  background-color: steelblue;
+  text-align: right;
+  padding: 3px;
+  margin: 1px;
+  color: white;
+}
+
+</style>
+
+<div class="chart">
+</div>
+
+
+<script>
+
+var data = [2,4,1,4,7,8,5,9,3];
+
+var x = d3.scale.linear()
+	.domain([0, d3.max(data)])
+	.range([0, 420]);
+
+d3.select(".chart")
+	.selectAll("div")
+		.data(data)
+	.enter().append("div")
+		.style("width", function(d) { return x(d) + "px"; })
+		.text(function(d) { return d; });
+
+</script>
