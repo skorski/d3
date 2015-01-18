@@ -6,6 +6,16 @@
 
 <style>
 
+.chart rect {
+	fill: steelblue;
+}
+
+.chart text {
+	fill: white;
+	font: 10px sans-serif;
+	text-anchor: end;
+}
+
 .chart div {
   font: 10px sans-serif;
   background-color: steelblue;
@@ -17,22 +27,65 @@
 
 </style>
 
-<div class="chart">
+<div class="divchart">
 </div>
-
+<br>
+<br>
+<svg class="chart"></svg>
 
 <script>
-
 var data = [2,4,1,4,7,8,5,9,3];
 
+// this will make the svg version
+
+var width = 420, barHeight = 20;
+
+var x = d3.scale.linear()
+	.range([0, width]);
+
+var chart = d3.select(".chart")
+	.attr("width", width);
+
+d3.tsv("tutorial.tsv", type, function(error, data) { 
+	x.domain([0, d3.max(data, function(d) { return d.value})]);
+
+	chart.attr("height", barHeight * data.length);
+
+	var bar = chart.selectAll("g")
+		.data(data)
+		.enter().append("g")
+			.attr("transform", function(d,i) 
+				{ return "translate(0," + i * barHeight + ")"; });
+
+	bar.append("rect")
+	.attr("width", function(d) { return x(d.value); })
+		.attr("height", barHeight - 1);
+
+	bar.append("text")
+	.attr("x", function(d) { return x(d.value) - 3;})
+	.attr("y", barHeight / 2)
+	.attr("dy", "0.35em")
+	.text(function(d) { return d.value; });
+
+
+});
+
+
+function type(d) {
+	d.value = +d.value; 
+	return d;
+}
+
+
+//This is for the div version
 var x = d3.scale.linear()
 	.domain([0, d3.max(data)])
 	.range([0, 420]);
 
-d3.select(".chart")
+d3.select(".divchart")
 	.selectAll("div")
 		.data(data)
-	.enter().append("div")
+	.enter().append("divchart")
 		.style("width", function(d) { return x(d) + "px"; })
 		.text(function(d) { return d; });
 
